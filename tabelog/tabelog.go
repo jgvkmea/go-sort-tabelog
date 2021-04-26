@@ -11,7 +11,7 @@ import (
 const (
 	userAgent     = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Chrome/35.0.1916.114 Safari/537.36"
 	tabelogTopURL = "https://tabelog.com/"
-	maxSearchPage = 3
+	maxSearchPage = 10
 )
 
 type SearchParams struct {
