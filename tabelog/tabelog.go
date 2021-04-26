@@ -28,6 +28,7 @@ type Shop struct {
 func NewWebDriver() *agouti.WebDriver {
 	return agouti.ChromeDriver(
 		agouti.ChromeOptions("args", []string{
+			"--headless",
 			"no sandbox",
 			fmt.Sprintf("--user-agent=%s", userAgent),
 		}),
