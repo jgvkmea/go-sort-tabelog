@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	userAgent     = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Chrome/35.0.1916.114 Safari/537.36"
-	tabelogTopURL = "https://tabelog.com/"
-	maxSearchPage = 10
+	userAgent         = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Chrome/35.0.1916.114 Safari/537.36"
+	tabelogTopURL     = "https://tabelog.com/"
+	defaultSearchPage = 10
 )
 
 type SearchParams struct {
@@ -85,7 +85,14 @@ func GetShopList(page *agouti.Page, log *logrus.Logger) ([]Shop, error) {
 	shops := []Shop{}
 	var err error
 
-	for i := 1; i <= maxSearchPage; i++ {
+	searchPage, err := getSearchPageCount(page)
+	if err != nil {
+		log.Errorln(err)
+		return nil, err
+	}
+
+	for i := 1; i <= searchPage; i++ {
+		// 1ページ目以外の場合は next ボタンを押してから店舗情報取得する
 		if i > 1 {
 			url, err := page.FindByClass("c-pagination__arrow--next").Attribute("href")
 			if err != nil {
@@ -107,6 +114,23 @@ func GetShopList(page *agouti.Page, log *logrus.Logger) ([]Shop, error) {
 	}
 
 	return shops, nil
+}
+
+func getSearchPageCount(page *agouti.Page) (int, error) {
+	shopCountText, err := page.All(".c-page-count__num").At(2).Find("strong").Text()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get shop count: %v", err)
+	}
+
+	shopCount, err := strconv.Atoi(shopCountText)
+	if err != nil {
+		return 0, fmt.Errorf("failed to convert string to int: %v", err)
+	}
+
+	if shopPageCount := shopCount/20 + 1; shopPageCount < defaultSearchPage {
+		return shopPageCount, nil
+	}
+	return defaultSearchPage, nil
 }
 
 func getShopListFromPage(page *agouti.Page, shops []Shop, log *logrus.Logger) ([]Shop, error) {
