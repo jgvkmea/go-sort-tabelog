@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	outputCount = 7
+	defaultOutputCount = 7
 )
 
 var (
@@ -41,11 +41,15 @@ func GetShopsOrderRating(params tabelog.SearchParams) {
 	}
 	sort.Slice(shops, func(i, j int) bool { return shops[i].Rating > shops[j].Rating })
 
-	count := outputCount
-	if len(shops) < outputCount {
-		count = len(shops)
-	}
-	for i := 0; i < count; i++ {
+	outputCount := getOutputCount(shops)
+	for i := 0; i < outputCount; i++ {
 		fmt.Printf("%d位 rating:%g %s URL: %s\n", i+1, float64(shops[i].Rating)/100, shops[i].Name, shops[i].Url)
 	}
+}
+
+func getOutputCount(shops []tabelog.Shop) (count int) {
+	if len(shops) < defaultOutputCount {
+		return len(shops)
+	}
+	return defaultOutputCount
 }
