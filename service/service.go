@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/jgvkmea/go-sort-tabelog/tabelog"
@@ -9,42 +8,39 @@ import (
 )
 
 const (
-	defaultOutputCount = 7
+	defaultOutputCount = 5
 )
 
 var (
 	log = logrus.New()
 )
 
-func GetShopsOrderRating(params tabelog.SearchParams) {
+func GetShopsOrderRating(area string, keyword string) ([]tabelog.Shop, error) {
 	driver := tabelog.NewWebDriver()
 	if err := driver.Start(); err != nil {
-		return
+		return nil, err
 	}
 	defer driver.Stop()
 
 	page, err := tabelog.NewPage(driver)
 	if err != nil {
 		log.Errorf("failed to create page: %v", err)
-		return
+		return nil, err
 	}
 
 	tabelog.GoToTabelogTop(page)
-	err = tabelog.Search(page, params, log)
+	err = tabelog.Search(page, area, keyword, log)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	shops, err := tabelog.GetShopList(page, log)
 	if err != nil {
-		return
+		return nil, err
 	}
 	sort.Slice(shops, func(i, j int) bool { return shops[i].Rating > shops[j].Rating })
 
-	outputCount := getOutputCount(shops)
-	for i := 0; i < outputCount; i++ {
-		fmt.Printf("%d位 rating:%g %s URL: %s\n", i+1, float64(shops[i].Rating)/100, shops[i].Name, shops[i].Url)
-	}
+	return shops, nil
 }
 
 func getOutputCount(shops []tabelog.Shop) (count int) {

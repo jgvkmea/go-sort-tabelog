@@ -11,13 +11,8 @@ import (
 const (
 	userAgent         = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Chrome/35.0.1916.114 Safari/537.36"
 	tabelogTopURL     = "https://tabelog.com/"
-	defaultSearchPage = 10
+	defaultSearchPage = 5
 )
-
-type SearchParams struct {
-	Area    string
-	Keyword string
-}
 
 type Shop struct {
 	Name   string
@@ -29,7 +24,7 @@ func NewWebDriver() *agouti.WebDriver {
 	return agouti.ChromeDriver(
 		agouti.ChromeOptions("args", []string{
 			"--headless",
-			"no sandbox",
+			"--no-sandbox",
 			fmt.Sprintf("--user-agent=%s", userAgent),
 		}),
 	)
@@ -47,7 +42,7 @@ func GoToTabelogTop(page *agouti.Page) error {
 	return page.Navigate(tabelogTopURL)
 }
 
-func Search(page *agouti.Page, params SearchParams, log *logrus.Logger) error {
+func Search(page *agouti.Page, area string, keyword string, log *logrus.Logger) error {
 	url, err := page.URL()
 	if err != nil {
 		log.Errorf("failed to get url: %v", err)
@@ -58,21 +53,17 @@ func Search(page *agouti.Page, params SearchParams, log *logrus.Logger) error {
 		return fmt.Errorf("this page is not tabelog top")
 	}
 
-	area := page.FindByID("sa")
-	keyword := page.FindByID("sk")
-	submit := page.FindByID("js-global-search-btn")
-
-	err = area.Fill(params.Area)
+	err = page.FindByID("sa").Fill(area)
 	if err != nil {
 		log.Errorf("failed to fill area: %v", err)
 		return err
 	}
-	err = keyword.Fill(params.Keyword)
+	err = page.FindByID("sk").Fill(keyword)
 	if err != nil {
 		log.Errorf("failed to fill keyword: %v", err)
 		return err
 	}
-	err = submit.Click()
+	err = page.FindByID("js-global-search-btn").Click()
 	if err != nil {
 		log.Errorf("failed to click submit: %v", err)
 		return err
