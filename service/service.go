@@ -8,14 +8,14 @@ import (
 )
 
 const (
-	defaultOutputCount = 5
+	defaultOutputCount = 7
 )
 
 var (
 	log = logrus.New()
 )
 
-func GetShopsOrderRating(area string, keyword string) ([]tabelog.Shop, error) {
+func GetShopsOrderByRating(area string, keyword string) ([]tabelog.Shop, error) {
 	driver := tabelog.NewWebDriver()
 	if err := driver.Start(); err != nil {
 		return nil, err

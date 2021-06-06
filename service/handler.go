@@ -53,25 +53,28 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 				}
 				log.Infof("are: %s, keyword: %s", area, keyword)
 
-				shops, err := GetShopsOrderRating(area, keyword)
+				shops, err := GetShopsOrderByRating(area, keyword)
 				if err != nil {
 					log.Errorln("failed to get shops order by rating: ", err)
 					w.WriteHeader(500)
 				}
 
 				count := getOutputCount(shops)
-				sm := []linebot.SendingMessage{}
+				var pushMessages []string
 				for i := 0; i < count; i++ {
-					sm = append(sm, linebot.NewTextMessage(fmt.Sprintf(
-						"%d位 rating: %g\n%s\n%s",
+					pushMessages = append(pushMessages, fmt.Sprintf(
+						"%d位 %s\nRating: %g\n%s",
 						i+1,
-						float64(shops[i].Rating)/100,
 						shops[i].Name,
+						float64(shops[i].Rating)/100,
 						shops[i].Url,
-					)))
+					))
 				}
 
-				_, err = lineClient.PushMessage(event.Source.UserID, sm...).Do()
+				_, err = lineClient.PushMessage(
+					event.Source.UserID,
+					linebot.NewTextMessage(strings.Join(pushMessages, "\n\n")),
+				).Do()
 				if err != nil {
 					log.Errorln("failed to reply message: ", err)
 					w.WriteHeader(500)
