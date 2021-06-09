@@ -63,9 +63,10 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 				var pushMessages []string
 				for i := 0; i < count; i++ {
 					pushMessages = append(pushMessages, fmt.Sprintf(
-						"%d位 %s\nRating: %g\n%s",
+						"%d位 %s\n%c%g\n%s",
 						i+1,
 						shops[i].Name,
+						0x2B50,
 						float64(shops[i].Rating)/100,
 						shops[i].Url,
 					))
