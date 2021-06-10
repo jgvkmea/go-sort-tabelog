@@ -14,10 +14,9 @@ func WithLogger(ctx context.Context) context.Context {
 	return ctx
 }
 
-// TODO: ロガー生成する処理書く
-func middleware(next http.Handler) http.Handler {
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// ここにミドルウェア処理を記載
+		r = r.WithContext(context.WithValue(r.Context(), loggerKey{}, logrus.New()))
 		next.ServeHTTP(w, r)
 	})
 }

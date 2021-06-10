@@ -32,6 +32,6 @@ func StartServer(ctx context.Context, address string, port string, certPath stri
 }
 
 func routing(r *mux.Router) {
+	r.Use(logger.Middleware)
 	r.HandleFunc("/linebot/tabelog", service.TabelogSearchHandler).Methods("POST")
-	// TODO: ミドルウェア追加
 }

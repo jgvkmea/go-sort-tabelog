@@ -6,15 +6,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jgvkmea/go-sort-tabelog/middleware/logger"
 	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/sirupsen/logrus"
 )
 
 const replyText = "今から調べるから数分待っててね〜\n(多めに言ってるわけじゃなくてちゃんと数分かかります)"
 
 func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
-	// TODO: contextから取得するようにかきかえる
-	log := logrus.New()
+	ctx := req.Context()
+	log := logger.FromContext(ctx)
 
 	lineClient, err := linebot.New(
 		os.Getenv("CHANNEL_SECRET"),
