@@ -2,6 +2,7 @@ package tabelog
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 
 	"github.com/sclevine/agouti"
@@ -12,6 +13,7 @@ const (
 	userAgent         = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Chrome/35.0.1916.114 Safari/537.36"
 	tabelogTopURL     = "https://tabelog.com/"
 	defaultSearchPage = 5
+	countPerPage      = 20
 )
 
 type Shop struct {
@@ -118,8 +120,8 @@ func getSearchPageCount(page *agouti.Page) (int, error) {
 		return 0, fmt.Errorf("failed to convert string to int: %v", err)
 	}
 
-	if shopPageCount := shopCount/20 + 1; shopPageCount < defaultSearchPage {
-		return shopPageCount, nil
+	if shopPageCount := math.Ceil(float64(shopCount) / countPerPage); shopPageCount < defaultSearchPage {
+		return int(shopPageCount), nil
 	}
 	return defaultSearchPage, nil
 }
