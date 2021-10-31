@@ -11,9 +11,19 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
-const replyText = "今から調べるから数分待っててね〜\n(多めに言ってるわけじゃなくてちゃんと数分かかります)"
+const ()
+
+var (
+	replyText                = fmt.Sprintf("今から調べるから数分待っててね%c", navigateMan)
+	littleConditionErrorText = fmt.Sprintf("%c入力エラー%c\n検索条件が足りないよ%c%c\n「エリア名 キーワード」で検索してね！", warning, warning, tiredFace, tiredFace)
+	manyConditionErrorText   = fmt.Sprintf("%c入力エラー%c\n検索条件が多すぎるよ%c%c\n「エリア名 キーワード」で検索してね！", warning, warning, tiredFace, tiredFace)
+)
+
 const (
-	emojiStar = 0x2B50
+	emojiStar   = 0x2B50
+	tiredFace   = 0x1F62B
+	warning     = 0x1F6AB
+	navigateMan = 0x1F481
 )
 
 func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
@@ -41,21 +51,32 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if _, err := lineClient.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyText)).Do(); err != nil {
-					err = fmt.Errorf("echo reply failed: %s", err)
-					log.Errorln(err)
+
+				text := strings.ReplaceAll(message.Text, "　", " ")
+				conditions := strings.Split(text, " ")
+				if len(conditions) < 2 {
+					log.Errorln("received search condition is too little")
+					if _, err := lineClient.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(littleConditionErrorText)).Do(); err != nil {
+						err = fmt.Errorf("echo reply failed: %s", err)
+						log.Errorln(err)
+						return
+					}
+					w.WriteHeader(400)
+					return
+				} else if len(conditions) > 2 {
+					log.Errorln("received search condition is too many")
+					if _, err := lineClient.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(manyConditionErrorText)).Do(); err != nil {
+						err = fmt.Errorf("echo reply failed: %s", err)
+						log.Errorln(err)
+						return
+					}
+					w.WriteHeader(400)
 					return
 				}
 
-				conditions := strings.Split(message.Text, " ")
-				if len(conditions) > 2 {
-					eMsg := fmt.Sprintf("received search condition is too many")
-					log.Errorln(eMsg)
-					err = utils.AlertByLinebot(eMsg)
-					if err != nil {
-						log.Errorln("failed to push message by linebot")
-					}
-					w.WriteHeader(400)
+				if _, err := lineClient.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyText)).Do(); err != nil {
+					err = fmt.Errorf("echo reply failed: %s", err)
+					log.Errorln(err)
 					return
 				}
 
