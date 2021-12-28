@@ -17,13 +17,16 @@ var (
 	replyText                = fmt.Sprintf("今から調べるから数分待っててね%c", navigateMan)
 	littleConditionErrorText = fmt.Sprintf("%c入力エラー%c\n検索条件が足りないよ%c%c\n「エリア名 キーワード」で検索してね！", warning, warning, tiredFace, tiredFace)
 	manyConditionErrorText   = fmt.Sprintf("%c入力エラー%c\n検索条件が多すぎるよ%c%c\n「エリア名 キーワード」で検索してね！", warning, warning, tiredFace, tiredFace)
+	getShopOrderErrorText    = fmt.Sprintf("食べログ検索に失敗しました%c\n少し時間を開けてもう一度試してみてください。\nまたエラーが出たら作成者に連絡をください%c", cryingFace, foldedHand)
 )
 
 const (
-	emojiStar   = 0x2B50
+	cryingFace  = 0x1F622
 	tiredFace   = 0x1F62B
-	warning     = 0x1F6AB
 	navigateMan = 0x1F481
+	emojiStar   = 0x2B50
+	foldedHand  = 0x1F64F
+	warning     = 0x1F6AB
 )
 
 func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
@@ -91,9 +94,18 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 				if err != nil {
 					eMsg := fmt.Sprintf("failed to get shops order by rating: %s", err)
 					log.Errorln(eMsg)
+
+					_, err = lineClient.PushMessage(
+						event.Source.UserID,
+						linebot.NewTextMessage(getShopOrderErrorText),
+					).Do()
+					if err != nil {
+						log.Errorln("failed to push message to user")
+					}
+
 					err = utils.AlertByLinebot(eMsg)
 					if err != nil {
-						log.Errorln("failed to push message by linebot")
+						log.Errorln("failed to alert message by linebot")
 					}
 					w.WriteHeader(500)
 					return
