@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	EMOJI_STAR = 0x2B50
+	EMOJI_STAR = "⭐️"
 )
 
 type LineClient struct {
@@ -50,7 +50,7 @@ func createShopListMessage(shops []entity.Shop) (string, error) {
 	var pushMessages []string
 	for i, shop := range shops {
 		pushMessages = append(pushMessages, fmt.Sprintf(
-			"%d位 %s\n%c%g\n%s",
+			"%d位 %s\n%s%g\n%s",
 			i+1,
 			shop.GetName(),
 			EMOJI_STAR,
