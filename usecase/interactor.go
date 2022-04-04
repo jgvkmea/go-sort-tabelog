@@ -8,10 +8,11 @@ import (
 
 type TabelogInteractor struct {
 	FromContext func(ctx context.Context) *logrus.Logger
+	snsClient   SNSClient
 }
 
-func NewTabelogInteractor(FromContext func(ctx context.Context) *logrus.Logger) IUseCase {
-	return TabelogInteractor{FromContext}
+func NewTabelogInteractor(FromContext func(ctx context.Context) *logrus.Logger, snsClient SNSClient) IUseCase {
+	return TabelogInteractor{FromContext, snsClient}
 }
 
 func (t TabelogInteractor) GetShopsOrderByRating(ctx context.Context, inputdata *GetShopsOrderByRatingInputData) error {
@@ -21,21 +22,21 @@ func (t TabelogInteractor) GetShopsOrderByRating(ctx context.Context, inputdata 
 	conditions := getSearchCondition(inputdata.message)
 	if len(conditions) < 1 {
 		log.Errorln("received search condition is too little")
-		if err := inputdata.snsClient.ReplyMessage(inputdata.replyToken, littleConditionErrorText); err != nil {
+		if err := t.snsClient.ReplyMessage(inputdata.replyToken, littleConditionErrorText); err != nil {
 			log.Errorf("failed to reply message: %s", err)
 			return InternalError
 		}
 		return BadRequestError
 	} else if len(conditions) > 2 {
 		log.Errorln("received search condition is too many")
-		if err := inputdata.snsClient.ReplyMessage(inputdata.replyToken, manyConditionErrorText); err != nil {
+		if err := t.snsClient.ReplyMessage(inputdata.replyToken, manyConditionErrorText); err != nil {
 			log.Errorf("failed to reply message: %s", err)
 			return InternalError
 		}
 		return BadRequestError
 	}
 
-	if err := inputdata.snsClient.ReplyMessage(inputdata.replyToken, replyText); err != nil {
+	if err := t.snsClient.ReplyMessage(inputdata.replyToken, replyText); err != nil {
 		log.Errorf("failed to reply message: %s", err)
 		return InternalError
 	}
@@ -62,7 +63,7 @@ func (t TabelogInteractor) GetShopsOrderByRating(ctx context.Context, inputdata 
 	}
 	log.Infoln("shops: ", shops)
 
-	if err = inputdata.snsClient.PushShopsMessage(inputdata.destinationUserID, shops); err != nil {
+	if err = t.snsClient.PushShopsMessage(inputdata.destinationUserID, shops); err != nil {
 		log.Errorln("failed to push message: ", err)
 		return err
 	}

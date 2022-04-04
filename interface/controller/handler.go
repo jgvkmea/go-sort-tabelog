@@ -35,9 +35,8 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				u := usecase.NewTabelogInteractor(logger.FromContext)
+				u := usecase.NewTabelogInteractor(logger.FromContext, gateway.NewLineClient(lineClient))
 				inputdata := usecase.NewGetShopsOrderByRatingInputData(
-					gateway.NewLineClient(lineClient),
 					gateway.NewWebDriver(),
 					message.Text,
 					event.ReplyToken,
