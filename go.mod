@@ -9,4 +9,5 @@ require (
 	github.com/onsi/gomega v1.13.0 // indirect
 	github.com/sclevine/agouti v3.0.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/cobra v1.7.0 // indirect
 )

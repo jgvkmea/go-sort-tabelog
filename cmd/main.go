@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
-	"github.com/jgvkmea/go-sort-tabelog/middleware/logger"
+	"github.com/jgvkmea/go-sort-tabelog/interface/controller/middleware/logger"
 	"github.com/jgvkmea/go-sort-tabelog/server"
 )
 
@@ -19,15 +20,21 @@ func main() {
 	ctx = logger.WithLogger(ctx)
 	log := logger.FromContext(ctx)
 
-	certPath := os.Getenv("SSH_CERT_PATH")
-	keyPath := os.Getenv("SSH_KEY_PATH")
+	certPath, keyPath := getSSHFilePath()
 	if certPath == "" || keyPath == "" {
 		log.Errorln("require parameter certPath and keyPath")
 		return
 	}
 
 	flag.Parse()
-	if err := server.StartServer(ctx, *address, *port, certPath, keyPath); err != nil {
+
+	if err := server.StartServer(ctx, fmt.Sprintf("%s:%s", *address, *port), certPath, keyPath); err != nil {
 		log.Errorln("failed to start server: ", err)
 	}
+}
+
+func getSSHFilePath() (certPath string, keyPath string) {
+	certPath = os.Getenv("SSH_CERT_PATH")
+	keyPath = os.Getenv("SSH_KEY_PATH")
+	return
 }
