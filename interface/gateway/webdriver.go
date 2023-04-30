@@ -68,14 +68,12 @@ func (wd *WebDriver) GetShopList(area string, keyword string) (entity.Shops, err
 	return shops, nil
 }
 
-func NewWebDriver() usecase.ShopDataSource {
+func NewWebDriver(ops ...string) usecase.ShopDataSource {
+	ops = append(ops, fmt.Sprintf("--user-agent=%s", USER_AGENT))
+
 	return &WebDriver{
 		driver: agouti.ChromeDriver(
-			agouti.ChromeOptions("args", []string{
-				"--headless",
-				"--no-sandbox",
-				fmt.Sprintf("--user-agent=%s", USER_AGENT),
-			}),
+			agouti.ChromeOptions("args", ops),
 		),
 	}
 }
