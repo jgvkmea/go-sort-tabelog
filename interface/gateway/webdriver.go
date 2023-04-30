@@ -125,7 +125,7 @@ func (d *WebDriver) search(area string, keyword string) error {
 	if err != nil {
 		return fmt.Errorf("failed to fill keyword: %v", err)
 	}
-	err = d.page.FindByID("js-global-search-btn").Click()
+	err = d.page.FindByID("js-global-search-btn").Submit()
 	if err != nil {
 		return fmt.Errorf("failed to click submit: %v", err)
 	}
