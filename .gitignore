@@ -31,7 +31,6 @@ Thumbs.db
 
 # 環境変数ファイル
 .env
-.env.*
 
 # ローカル設定ファイル
 *.local
