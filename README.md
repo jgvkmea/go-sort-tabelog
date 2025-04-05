@@ -8,7 +8,6 @@ CLI ツールとしても使用可能です。
 - LINE Bot として動作し、ユーザーからのメッセージに応じて食べログ検索を実行
 - CLI ツールで指定したエリア・キーワードに応じて上位 5 件の飲食店情報を取得
 - 店舗情報は Agouti を利用してブラウザ操作によりスクレイピング
-- LINE 通知やアラート送信機能あり（alert-linebot 連携）
 
 ---
 
@@ -31,7 +30,7 @@ CLI ツールとしても使用可能です。
 │ └── cmd/ # CLIコマンド (root, search)
 ├── cmd/ # Webサーバ起動エントリポイント
 ├── entity/ # ドメインモデル（Shopなど）
-├── interface/ # 外部インターフェース (LINE, AlertBot, WebDriver)
+├── interface/ # 外部インターフェース (LINE, WebDriver)
 │ ├── controller/ # HTTPハンドラ
 │ └── gateway/ # 外部サービス連携
 ├── server/ # サーバ起動処理
