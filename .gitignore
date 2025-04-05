@@ -1,1 +1,44 @@
-bin/
+# ビルドバイナリ
+/bin/
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# OSごとの一時ファイル
+.DS_Store
+Thumbs.db
+
+# IDE・エディタ関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*.log
+
+# Go modules キャッシュ
+/pkg/
+/vendor/
+
+# カバレッジファイル
+*.coverprofile
+*.testresult
+
+# 環境変数ファイル
+.env
+.env.*
+
+# ローカル設定ファイル
+*.local
+*.secret
+*.bak
+*.tmp
+
+# ランタイムファイル
+nohup.out
+*.pid
