@@ -18,7 +18,7 @@ CLI ツールとしても使用可能です。
 - [Agouti](https://github.com/sclevine/agouti): Web スクレイピング用のヘッドレスブラウザ制御
 - [LINE Messaging API](https://developers.line.biz/ja/services/messaging-api/)
 - [logrus](https://github.com/sirupsen/logrus): ログ出力
-- Gorilla Mux: HTTP ルーティング
+- [Gorilla Mux](https://github.com/gorilla/mux): HTTP ルーティング
 
 ## 構成
 
