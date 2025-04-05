@@ -27,10 +27,7 @@ func main() {
 	}
 
 	flag.Parse()
-
-	if err := server.StartServer(ctx, fmt.Sprintf("%s:%s", *address, *port), certPath, keyPath); err != nil {
-		log.Errorln("failed to start server: ", err)
-	}
+	server.StartServer(ctx, fmt.Sprintf("%s:%s", *address, *port), certPath, keyPath)
 }
 
 func getSSHFilePath() (certPath string, keyPath string) {
