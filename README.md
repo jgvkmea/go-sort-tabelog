@@ -42,12 +42,12 @@ CLI ツールとしても使用可能です。
 
 ## 環境変数
 
-| 変数名                        | 内容                            |
-| ----------------------------- | ------------------------------- |
-| `SSH_CERT_PATH`               | TLS 証明書ファイルのパス        |
-| `SSH_KEY_PATH`                | TLS 鍵ファイルのパス            |
-| `TABELOG_SORT_CHANNEL_SECRET` | LINE チャンネルシークレット     |
-| `TABELOG_SORT_CHANNEL_TOKEN`  | LINE チャンネルアクセストークン |
+| 変数名                        | 内容                                                                |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `TLS_CERT_PATH`               | TLS 証明書ファイルのパス（任意・`--tls-cert` フラグのデフォルト値） |
+| `TLS_KEY_PATH`                | TLS 鍵ファイルのパス（任意・`--tls-key` フラグのデフォルト値）      |
+| `TABELOG_SORT_CHANNEL_SECRET` | LINE チャンネルシークレット                                         |
+| `TABELOG_SORT_CHANNEL_TOKEN`  | LINE チャンネルアクセストークン                                     |
 
 ## ビルド方法
 
@@ -63,8 +63,17 @@ make build-cli
 
 ### サーバ起動
 
+HTTP（Cloudflare Tunnel 等で TLS 終端する想定）:
+
 ```bash
-./bin/tabelogbot --addr 0.0.0.0 --port 443
+./bin/tabelogbot --addr 0.0.0.0 --port 8080
+```
+
+HTTPS（自前で TLS 終端する場合は `--tls-cert` / `--tls-key` を両方指定）:
+
+```bash
+./bin/tabelogbot --addr 0.0.0.0 --port 443 \
+  --tls-cert /path/to/cert.pem --tls-key /path/to/key.pem
 ```
 
 ### CLI 利用例

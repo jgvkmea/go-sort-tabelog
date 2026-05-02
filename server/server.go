@@ -38,7 +38,13 @@ func StartServer(ctx context.Context, addr string, certPath string, keyPath stri
 	}()
 
 	log.Infoln("start linebot server")
-	if err := s.ListenAndServeTLS(certPath, keyPath); err != nil {
+	var err error
+	if certPath != "" && keyPath != "" {
+		err = s.ListenAndServeTLS(certPath, keyPath)
+	} else {
+		err = s.ListenAndServe()
+	}
+	if err != nil {
 		log.Infoln("failed to listen and serve: ", err)
 	}
 	<-idleConnsClosed
