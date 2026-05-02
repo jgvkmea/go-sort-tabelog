@@ -41,3 +41,5 @@ Thumbs.db
 # ランタイムファイル
 nohup.out
 *.pid
+
+.claude
