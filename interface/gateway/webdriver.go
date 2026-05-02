@@ -69,7 +69,14 @@ func (wd *WebDriver) GetShopList(area string, keyword string) (entity.Shops, err
 }
 
 func NewWebDriver(ops ...string) usecase.ShopDataSource {
-	ops = append(ops, fmt.Sprintf("--user-agent=%s", USER_AGENT))
+	defaultOps := []string{
+		"--no-sandbox",
+		"--headless=new",
+		"--disable-dev-shm-usage",
+		"--disable-gpu",
+		fmt.Sprintf("--user-agent=%s", USER_AGENT),
+	}
+	ops = append(defaultOps, ops...)
 
 	return &WebDriver{
 		driver: agouti.ChromeDriver(

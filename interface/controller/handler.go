@@ -37,7 +37,7 @@ func TabelogSearchHandler(w http.ResponseWriter, req *http.Request) {
 			case *linebot.TextMessage:
 				u := usecase.NewTabelogInteractor(logger.FromContext, gateway.NewLineClient(lineClient))
 				inputdata := usecase.NewGetShopsOrderByRatingInputData(
-					gateway.NewWebDriver("--headless", "--no-sandbox"),
+					gateway.NewWebDriver(),
 					message.Text,
 					event.ReplyToken,
 					event.Source.UserID,

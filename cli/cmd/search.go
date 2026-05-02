@@ -29,7 +29,7 @@ var searchCmd = &cobra.Command{
 		}
 		l.Infof("area:%s keyword:%s で検索します", area, keyword)
 
-		wd := gateway.NewWebDriver("--no-sandbox")
+		wd := gateway.NewWebDriver()
 		shops, err := wd.GetShopList(area, keyword)
 		if err != nil {
 			l.Errorf("failed to get shop list: %s", err)
